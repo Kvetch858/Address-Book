@@ -1,0 +1,54 @@
+
+<h1>
+    Address Book
+</h1>
+
+<div class="address-list">
+    <div class="grid-container">
+        <mat-form-field>
+            <mat-label>Search Names</mat-label>
+            <input matInput [formControl]="searchNameControl">
+        </mat-form-field>
+        <h3>
+            Click on the name and surname column headers to sort them
+        </h3>
+        <button id="addNewAddressButton" (click)="openAddressForm()">
+            Add New
+        </button>
+        <table>
+            <tr>
+                <th *ngFor="let col of columnHeaders">
+                    <ng-container *ngIf="col.sortable && col.sortFunction">
+                        <div class="table-header-container sortable" (click)="col.sortFunction(col)">
+                            <div>{{col.header}}</div>
+                            <div [ngClass]="{'arrow-up': col.sortOrder === 'asc', 'arrow-down': col.sortOrder === 'desc' }" ></div>
+                        </div>
+                    </ng-container>
+                    <div *ngIf="!col.sortable">
+                        {{col.header}}
+                    </div>
+                    
+                </th>
+            </tr>
+        
+            <tr *ngFor="let address of data$ | async; ; index as i" [ngClass]="{'alternate-row': i%2 === 0}">
+                <td class="name-cell">
+                    {{ address.name }}
+                </td>
+                <td class="name-cell">
+                    {{ address.surname }}
+                </td>
+                <td class="number-cell">
+                    {{ address.phoneNumber }}
+                </td>
+                <td>
+                    <span (click)="openAddressForm(address.id)">Edit</span>
+                </td>
+                <td >
+                    <span (click)="deleteAddress(address.id)">Delete</span>
+                </td>
+            </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> </mat-paginator>
+    </div>
+</div>
